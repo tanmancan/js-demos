@@ -3,7 +3,8 @@
 var a = function() {
 		return new Promise(
 			function(resolve,reject) {
-				resolve('Hello World');
+				var sum = app2();
+				resolve(sum);
 			}
 		);
 	},
