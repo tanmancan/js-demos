@@ -34,13 +34,13 @@ var a = function() {
 
 a().then(function(a) {
 	return b();
-// Add breakpoin on line below to see value returned by the Promise
+// Add breakpoint on line below to see value returned by the Promise
 }).then(function(b) {
 	return c();
-// Add breakpoin on line below to see value returned by the Promise
+// Add breakpoint on line below to see value returned by the Promise
 }).then(function(c) {
-	
-// Add breakpoin on line below to see value returned by the Promise
+
+// Add breakpoint on line below to see value returned by the Promise
 }).catch(function(err) {
 
 });
