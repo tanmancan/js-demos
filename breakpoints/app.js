@@ -4,6 +4,7 @@ var a = function() {
 		return new Promise(
 			function(resolve,reject) {
 				var sum = app2();
+				// Add breakpoint on line below for stepping through next function demo
 				resolve(sum);
 			}
 		);
