@@ -8,4 +8,4 @@ Browsers provide powerful development tools that help debug errors or issues on 
 
 [Chrome devtools tips and tricks](https://developer.chrome.com/devtools/docs/tips-and-tricks)
 
-[More info about Chrome devtools](https://developer.chrome.com/devtools/docs/javascript-debugging)
+[Chrome devtools javascript debugging](https://developer.chrome.com/devtools/docs/javascript-debugging)
