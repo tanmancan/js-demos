@@ -1,0 +1,30 @@
+.flexbox-container {
+	border: 1px solid #aaa;
+}
+
+.flexbox-container > div {
+	padding: 1rem;
+	background: #ccc;
+	margin: 1rem;
+	font-weight: bold;
+}
+
+.item-1 {
+
+}
+
+.item-2 {
+
+}
+
+.item-3 {
+
+}
+
+.item-4 {
+
+}
+
+.item-5 {
+
+}
