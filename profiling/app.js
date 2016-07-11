@@ -3,6 +3,7 @@ var calculateMeetingCost = {
 	costDisplay: document.querySelector('.cost'),
 	startButton: document.querySelector('.button-start'),
 	stopButton: document.querySelector('.button-stop'),
+	pauseButton: null,
 	rate: document.getElementById('rate').value,
 	participants: document.getElementById('participants').value,
 	timeoutRef: null,
@@ -31,13 +32,23 @@ var calculateMeetingCost = {
 		
 		if(!_this.startTime)_this.startTime = Date.now();
 
-		if(_this.useRaf) {
-			_this.rafTimer();
+		if(_this.pauseButton) {
+			window.clearTimeout(_this.timeoutRef);
+			window.cancelAnimationFrame(_this.rafRef);
+			_this.startButton.innerHTML = 'Start Timer';
+			console.log('Start Timer');
 		}else {
-			_this.setTimeOutTimer();
+			if(_this.useRaf) {
+				_this.rafTimer();
+			}else {
+				_this.setTimeOutTimer();
+			}
+			_this.startButton.innerHTML = 'Pause Timer';
+			console.log('Pause Timer');
 		}
 
-		console.log('start counting');
+		_this.pauseButton = (_this.pauseButton) ? null : true;
+
 	},
 
 	stopCount: function() {
@@ -45,7 +56,14 @@ var calculateMeetingCost = {
 		window.clearTimeout(_this.timeoutRef);
 		window.cancelAnimationFrame(_this.rafRef);
 
-		console.log('stop counting');
+		_this.pauseButton = null;
+		_this.startButton.innerHTML = 'Start Timer';
+		_this.startTime = 0;
+		_this.totalCost = 0;
+		_this.timeDisplay.innerHTML = '0:0:0'
+		_this.costDisplay.innerHTML = '$0';
+		
+		console.log('Reset Timer');
 	},
 
 	calcCost: function(time) {
@@ -53,11 +71,13 @@ var calculateMeetingCost = {
 			totalTime = time || 1,
 			totalTimeHour;
 
-
+		_this.totalTimeSecondsCounter = Math.ceil(totalTime) % 60;
+		_this.totalTimeMinuteCounter = Math.floor(time / 60) % 60;
+		_this.totalTimeHourCounter = Math.floor(time / 3600) % 60;
+		_this.timeDisplay.innerHTML = _this.totalTimeHourCounter + ':' + _this.totalTimeMinuteCounter + ':' + _this.totalTimeSecondsCounter;
+		
 		totalTimeHour = totalTime / 3600;
-		_this.totalTimeSecondsCounter = (Math.ceil(totalTime) % 60 === 0) ? 0 : _this.totalTimeSecondsCounter + 1;
 		_this.totalCost = totalTimeHour * _this.rate * _this.participants;
-		_this.timeDisplay.innerHTML = Math.floor(time / 3600) + ':' + Math.floor(time / 60) + ':' + _this.totalTimeSecondsCounter;
 		_this.costDisplay.innerHTML = '$' + Math.floor(_this.totalCost * 100) / 100;
 	},
 
@@ -92,7 +112,7 @@ var calculateMeetingCost = {
 
 	init: function() {
 		var _this = this;
-		
+
 		_this.startButton.addEventListener('click', _this, false);
 		_this.stopButton.addEventListener('click', _this, false);
 	}
