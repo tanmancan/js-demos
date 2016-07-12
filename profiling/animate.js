@@ -2,22 +2,14 @@ var calculateMeetingCost = {
 	startButton: document.querySelector('.button-start'),
 	stopButton: document.querySelector('.button-stop'),
 	pauseButton: null,
+	ball: document.querySelector('.ball'),
 	animationBlock: document.getElementById('animation'),
 	ballTopPos: 0,
 	ballAnimationDirection: 1,
 	timeoutRef: null,
 	rafRef: null,
-	useRaf: false,
 	animationState: false,
-
-	createBall: function() {
-		var _this = this,
-			ball = document.createElement('div');
-
-		ball.className += 'ball';
-
-		return ball;
-	},
+	useRaf: true,
 
 	handleEvent: function(e) {
 		var _this = this;
@@ -29,16 +21,7 @@ var calculateMeetingCost = {
 	},
 
 	startAnimation: function() {
-		var _this = this,
-			currBalls = document.querySelectorAll('.ball').length,
-			ballCount = Number(document.getElementById('balls').value);
-
-		if(currBalls < ballCount) {
-			for(var i=0;i<(ballCount - currBalls);i++) {
-				console.log('inserting');
-				_this.animationBlock.appendChild(_this.createBall());
-			}
-		}
+		var _this = this;
 
 		if(!_this.startTime)_this.startTime = Date.now();
 
@@ -46,7 +29,6 @@ var calculateMeetingCost = {
 			window.clearTimeout(_this.timeoutRef);
 			window.cancelAnimationFrame(_this.rafRef);
 			_this.startButton.innerHTML = 'Start Animation';
-			console.log('Start Animation');
 		}else {
 			if(_this.useRaf) {
 				_this.rafTimer();
@@ -54,7 +36,6 @@ var calculateMeetingCost = {
 				_this.setTimeOutTimer();
 			}
 			_this.startButton.innerHTML = 'Pause Animation';
-			console.log('Pause Animation');
 		}
 
 		_this.pauseButton = (_this.pauseButton) ? null : true;
@@ -68,51 +49,44 @@ var calculateMeetingCost = {
 
 		_this.pauseButton = null;
 		_this.startButton.innerHTML = 'Start Animation';
-		_this.ballTopPos = null;
-		_this.animationBlock.innerHTML = '';
-		console.log('Reset Animation');
+		_this.ballTopPos = 0;
+		_this.ballAnimationDirection = 1;
 	},
 
-	animateBall: function(time) {
-		var _this = this,
-			balls = document.querySelectorAll('.ball'),
-			animationBlockBoundingBox = _this.animationBlock.getBoundingClientRect();
+	animateBall: function(animateProps) {
+		var _this = this;
 
-		Object(balls).forEach(function(el, idx) {
-			var ballBoundingBox = el.getBoundingClientRect();
-
-			if(ballBoundingBox.top >= animationBlockBoundingBox.top && ballBoundingBox.bottom <= animationBlockBoundingBox.bottom) {
-				
-				console.log(ballBoundingBox.top, animationBlockBoundingBox.top);
-				console.log(ballBoundingBox.bottom, animationBlockBoundingBox.bottom);
-				if(ballBoundingBox.top === animationBlockBoundingBox.top) {
-					_this.ballAnimationDirection = 1;
-					console.log('top');
-				}else if(ballBoundingBox.bottom === animationBlockBoundingBox.bottom) {
-					_this.ballAnimationDirection = -1;
-					console.log('bottom');
-				}
-					moveBall();
+		if(_this.ballTopPos >= 0 && _this.ballTopPos <= animateProps.ballMovePct) {
+			
+			if(_this.ballTopPos === 0) {
+				_this.ballAnimationDirection = 1;
+			}else if(_this.ballTopPos === animateProps.ballMovePct) {
+				_this.ballAnimationDirection = -1;
 			}
+				moveBall();
+		}
 
-			function moveBall() {
-					_this.ballTopPos += _this.ballAnimationDirection;
-					el.style.top = _this.ballTopPos + 'px';
-					console.log(_this.ballAnimationDirection);
-			}
-		});
+		function moveBall() {
+				_this.ballTopPos += _this.ballAnimationDirection;
+				_this.ball.style.transform = 'translate3d(0,' + _this.ballTopPos + '%, 0)';
+		}
 
-		window.setTimeout(function() {
-			console.log('slowing it down');
-		}, 1700);
 		_this.animationState = false;
 	},
 
 	setTimeOutTimer: function() {
-		var _this = this;
+		var _this = this,
+			animateProps = {};
+
+		animateProps.ballBoundingBox = _this.ball.getBoundingClientRect();
+		animateProps.ballHeight = _this.ball.getBoundingClientRect().height;
+		animateProps.animationBoundingBox = _this.animationBlock.getBoundingClientRect();
+		animateProps.animationBlockHeight = _this.animationBlock.getBoundingClientRect().height;
+
+		animateProps.ballMovePct = (animateProps.animationBlockHeight / animateProps.ballHeight - 1) * 100;
 
 		function animationLoop() {
-			_this.animateBall();
+			_this.animateBall(animateProps);
 			if(!_this.animationState) {
 				_this.animationState = true;
 				_this.timeoutRef = window.setTimeout(animationLoop, 17);
@@ -122,10 +96,18 @@ var calculateMeetingCost = {
 	},
 
 	rafTimer: function() {
-		var _this = this;
+		var _this = this,
+			animateProps = {};
+
+		animateProps.ballBoundingBox = _this.ball.getBoundingClientRect();
+		animateProps.ballHeight = _this.ball.getBoundingClientRect().height;
+		animateProps.animationBoundingBox = _this.animationBlock.getBoundingClientRect();
+		animateProps.animationBlockHeight = _this.animationBlock.getBoundingClientRect().height;
+
+		animateProps.ballMovePct = (animateProps.animationBlockHeight / animateProps.ballHeight - 1) * 100;
 
 		function animationLoop() {
-			_this.animateBall();
+			_this.animateBall(animateProps);
 			if(!_this.animationState) {
 				_this.animationState = true;
 				_this.rafRef = window.requestAnimationFrame(animationLoop);
