@@ -12,7 +12,7 @@ var calculateMeetingCost = {
 	ballSize: 1,
 	ballSizeModifier: .1,
 	animationState: false,
-	useRaf: false,
+	useRaf: document.getElementById('use-raf').checked,
 
 	handleEvent: function(e) {
 		var _this = this;
@@ -27,6 +27,7 @@ var calculateMeetingCost = {
 		var _this = this,
 			animateProps = {};
 
+		_this.useRaf = document.getElementById('use-raf').checked;
 		animateProps.ballBoundingBox = _this.ball.getBoundingClientRect();
 		animateProps.ballHeight = _this.ball.getBoundingClientRect().height;
 		animateProps.animationBoundingBox = _this.animationBlock.getBoundingClientRect();
@@ -103,7 +104,7 @@ var calculateMeetingCost = {
 			_this.ballSize += _this.ballSizeModifier;
 			_this.ball.style.transform += ' scale(' +_this.ballSize + ')';
 
-			_this.growBallRef = window.setTimeout(growAnimation, 16.6);
+			_this.growBallRef = window.setTimeout(growAnimation, 16.666);
 		}
 
 		growAnimation();
@@ -134,7 +135,7 @@ var calculateMeetingCost = {
 			_this.animateBall(animateProps);
 			if(!_this.animationState) {
 				_this.animationState = true;
-				_this.timeoutRef = window.setTimeout(animationLoop, 16.6);
+				_this.timeoutRef = window.setTimeout(animationLoop, 16.666);
 			}
 		}
 		animationLoop();
